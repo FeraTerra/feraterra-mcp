@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Node.js ${{ matrix.node-version }} Offline MCP & SDK Verification
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20", "22"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Run binary self-test
+        run: node ./bin/feraterra-mcp.mjs --self-test
+
+      - name: Run deterministic unit test suite
+        run: node --test test/mcp.test.mjs
+
+      - name: Verify offline local tarball pack, install-skill CLI, and ESM SDK import
+        run: |
+          TARBALL="$(npm pack --quiet)"
+          TMP_PROJ="$(mktemp -d)"
+          trap 'rm -rf "${TMP_PROJ}" "${TARBALL}"' EXIT
+          cp "${TARBALL}" "${TMP_PROJ}/"
+          cd "${TMP_PROJ}"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund --ignore-scripts "./${TARBALL}"
+          ./node_modules/.bin/feraterra-mcp --self-test
+          ./node_modules/.bin/feraterra-mcp install-skill --claude --cursor --codex --dir "${TMP_PROJ}/workspace"
+          node --input-type=module -e 'import { FeraTerraClient, PACKAGE_VERSION, strictBool, usdToTicks } from "feraterra-mcp"; if (PACKAGE_VERSION !== "4.9.5" || strictBool("false", true) !== false || usdToTicks("70000.25") !== 7000025 || typeof FeraTerraClient !== "function") process.exit(1);'

@@ -1,0 +1,69 @@
+{
+  "name": "feraterra-mcp",
+  "version": "4.9.5",
+  "mcpName": "io.github.FeraTerra/feraterra-mcp",
+  "description": "Zero-dependency Node.js >=20 Model Context Protocol (MCP) stdio server, Streamable HTTP proxy, portable trading skill installer, and ESM/TypeScript SDK for FeraTerra — sovereign CLOB perpetuals, spot, basis spreads, stateless order preview, and cryptographic Keccak-256 + secp256k1 solvency verification on Base.",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "FeraTerra",
+    "email": "packages@feraterra.app",
+    "url": "https://feraterra.app"
+  },
+  "main": "./src/index.mjs",
+  "types": "./src/index.d.ts",
+  "bin": {
+    "feraterra-mcp": "bin/feraterra-mcp.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.mjs",
+      "default": "./src/index.mjs"
+    }
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {},
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "self-test": "node ./bin/feraterra-mcp.mjs --self-test"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FeraTerra/feraterra-mcp.git"
+  },
+  "homepage": "https://feraterra.app",
+  "bugs": {
+    "url": "https://github.com/FeraTerra/feraterra-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "feraterra",
+    "clob",
+    "perpetuals",
+    "defi",
+    "base",
+    "crypto",
+    "trading",
+    "quant",
+    "orderbook",
+    "ai-agents",
+    "agent-skills",
+    "typescript"
+  ]
+}
